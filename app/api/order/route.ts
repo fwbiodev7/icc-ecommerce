@@ -1,0 +1,3 @@
+import { NextRequest,NextResponse } from 'next/server';
+import { db } from '../../../lib/database';
+export async function GET(req:NextRequest){const id=req.nextUrl.searchParams.get('session_id');if(!id||!/^cs_(test_|live_)?[a-zA-Z0-9]{16,200}$/.test(id))return NextResponse.json({error:'Pedido inválido.'},{status:400});if(!process.env.DATABASE_URL)return NextResponse.json({error:'Pagamento online indisponível.'},{status:503});try{const rows=await db()`SELECT status FROM orders WHERE stripe_session=${id}`;return NextResponse.json({status:rows[0]?.status||'pending'},{headers:{'Cache-Control':'no-store'}});}catch{return NextResponse.json({error:'Não foi possível consultar o pedido.'},{status:503});}}
