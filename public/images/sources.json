@@ -1,0 +1,37 @@
+{
+  "rapoo": [
+    "/images/rapoo-hq.webp",
+    "https://rapoo.africa/product/h120/",
+    "Foto da linha Rapoo H120, identificada na embalagem. Confirme a variante com a ICC."
+  ],
+  "gamer": [
+    "/images/gamer-hq.webp",
+    "https://www.panacompu.com/panama/en/product-information/razer-kraken-x-for-playstation-headset-wired-over-ear-headband-white",
+    "Foto de referência da linha Razer Kraken X branca. O título no catálogo está cortado; confirme a versão exata."
+  ],
+  "redragon": [
+    "/images/redragon-hq.webp",
+    "https://www.pichau.com.br/headset-gamer-redragon-nireus-rgb-som-surround-7-1-drivers-50mm-branco-h399w-rgb",
+    "Foto do Redragon Nireus branco. Confirme a variante e a disponibilidade com a ICC."
+  ],
+  "pcyes": [
+    "/images/pcyes-hq.webp",
+    "https://www.chipbyte.com.br/usb/teclado-mecanico-usb-pcyes-krl-vermelho-switch-outemu-blue/1752",
+    "Foto de referência do PCYes KLR. Confirme layout e switches com a loja."
+  ],
+  "evolut": [
+    "/images/evolut-hq.webp",
+    "https://www.ciapc.com.br/perifericos/mouse-teclado/teclado-mecanico-gamer-evolut-shodan-rgb-switch-red-preto-eg-203rg",
+    "Foto de referência da linha Evolut Shodan. O modelo completo não aparece no catálogo; confirme a versão com a ICC."
+  ],
+  "tdagger": [
+    "/images/tdagger-hq.webp",
+    "https://www.t-dagger.com/products/t-dagger-bora-t-tgk315-gaming-mechanical-keyboard-rgb-backlighting",
+    "Foto de referência da linha T-Dagger Bora. Confirme modelo, layout e switches com a ICC."
+  ],
+  "logitech": [
+    "/images/logitech-hq.webp",
+    "https://www.logitech.com/pt-br/shop/p/mk235-durable-keyboard-mouse.920-007903",
+    "Foto oficial do Logitech MK235. A disposição das teclas pode variar por região."
+  ]
+}

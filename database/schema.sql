@@ -25,3 +25,5 @@ BEGIN
 END $$;
 -- Stock stays zero and active=false until verified by the ICC team.
 INSERT INTO inventory(id,price) VALUES ('rapoo',21990),('gamer',42900),('redragon',33490),('pcyes',33990),('evolut',33990),('tdagger',31990),('logitech',18990) ON CONFLICT DO NOTHING;
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS fulfillment_status text NOT NULL DEFAULT 'new' CHECK(fulfillment_status IN ('new','preparing','ready','collected'));
+CREATE TABLE IF NOT EXISTS admin_attempts(key text PRIMARY KEY, attempts integer NOT NULL, window_start timestamptz NOT NULL);

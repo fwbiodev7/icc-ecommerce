@@ -10,14 +10,15 @@ Loja em português para a ICC Shopping da Informática, Varginha/MG. Next.js App
 - Envio de solicitação de pedido ao WhatsApp **+55 35 9179-1821**, conforme confirmação do solicitante. O número de oito dígitos foi mantido intencionalmente; confirme o funcionamento na conta da loja antes de divulgar.
 - Endereço, telefone, Instagram e comentários fornecidos nas capturas. A nota 4,6/172 avaliações é atribuída à captura, não anunciada como consulta atual.
 - Integração de pagamento com preço validado no servidor, reserva transacional de estoque, confirmação por webhook assinado e cancelamento idempotente.
+- Administração em `/admin`, com login protegido, sessão HttpOnly, limite de tentativas no banco, estoque e acompanhamento dos últimos 100 pedidos online.
 
 ## Situação comercial
 
-Os sete produtos Tech e preços vieram da imagem de catálogo enviada em 30/09/2026. As miniaturas foram recortadas dessa imagem. Dois títulos truncados e especificações incompletas são identificados para confirmação. Estoque real não foi fornecido.
+Os sete produtos Tech e preços vieram da imagem de catálogo enviada em 30/09/2026. As fotos exibidas foram pesquisadas na web e otimizadas em WebP, substituindo os recortes de baixa resolução. A fonte e a ressalva sobre variantes aparecem nos detalhes de cada produto. Dois títulos truncados e especificações incompletas são identificados para confirmação. Estoque real não foi fornecido.
 
 Os quatro itens de papelaria são **demonstrações**, com preços e fotos ilustrativos identificados. Não representam catálogo aprovado. Pagamentos estão desativados por padrão. O checkout de WhatsApp gera uma solicitação a ser confirmada pela loja, não registra um pedido pago.
 
-Não há conta de cliente, painel administrativo, emissão fiscal, rastreamento por transportadora ou integração de frete. Gestão de produtos é feita em `lib/catalog.ts`; estoque e pedidos pagos no PostgreSQL. Não apresentar esta versão como operação comercial 100% pronta antes de configurar e validar as dependências abaixo.
+Não há conta de cliente, emissão fiscal, rastreamento por transportadora ou integração automática de frete. Gestão do conteúdo dos produtos é feita em `lib/catalog.ts`; estoque e pedidos pagos no painel `/admin` conectado ao PostgreSQL. Não apresentar esta versão como operação comercial 100% pronta antes de configurar e validar as dependências abaixo.
 
 ## Executar
 
@@ -50,7 +51,7 @@ Sem as chaves de pagamento o site funciona como catálogo com sacola e solicita�
 
 `reserve_order` bloqueia as linhas de estoque em ordem consistente e reserva todos os itens numa transação. `release_order` restaura estoque uma única vez. A página de sucesso não confirma pagamento por conta própria: consulta o estado gravado pelo webhook. Se o banco/provedor falhar, o endpoint retorna erro sem expor detalhes internos. Falhas ambíguas de criação de sessão exigem conciliação no Stripe antes de liberar manualmente reservas pendentes. Configure também limites de requisição no provedor de hospedagem antes de vender publicamente.
 
-Pedidos pagos podem ser consultados em `orders`; não existe automação de expedição. A equipe precisa acompanhar esse banco ou integrar seu sistema de pedidos. Revise controles de acesso, retenção e cópias de segurança com o responsável da loja.
+Pedidos pagos podem ser acompanhados em `/admin`, com estados novo, em preparação, pronto para retirada e retirado. Configure `ADMIN_PASSWORD` com pelo menos 16 caracteres e `ADMIN_SESSION_SECRET` aleatório com pelo menos 32 caracteres. A sessão expira em 8 horas. Há limite de 5 tentativas de acesso por janela de 15 minutos; o proxy precisa fornecer corretamente o IP de origem. Não existe automação de expedição nem reembolso pelo painel; reembolsos são tratados no Stripe e o estoque deve ser reconciliado pela equipe. Pedidos WhatsApp são acompanhados no próprio WhatsApp. Revise controles de acesso, retenção e cópias de segurança com o responsável da loja.
 
 ## Verificação
 
@@ -62,11 +63,13 @@ npm audit
 
 Os testes iniciam o build de produção na porta 3100 e usam Microsoft Edge em modo headless. Para Chromium instalado via Playwright: `npx playwright install chromium` e `BROWSER_CHANNEL=chromium npm test` em um shell compatível, ou `$env:BROWSER_CHANNEL='chromium'; npm test` no PowerShell. `TEST_URL` permite testar um servidor já em execução. As capturas de desktop/mobile ficam em `test-results/` (ignorado pelo Git).
 
-Integrações Stripe/Neon não são testadas de ponta a ponta sem credenciais. Os testes locais verificam fluxos de catálogo, filtros, favoritos, persistência da sacola, quantidades, mensagem WhatsApp, fotos, ausência de overflow em 1440/390/320px, rotas, bloqueio de cobrança e validação básica das APIs.
+Integrações Stripe/Neon e o painel conectado não são testados de ponta a ponta sem credenciais. Os testes locais verificam fluxos de catálogo, filtros, favoritos, persistência da sacola, quantidades, mensagem WhatsApp, fotos, ausência de overflow em 1440/390/320px, rotas, bloqueio de cobrança e acesso administrativo sem autenticação.
 
 ## Fontes dos ativos
 
 - Fotos dos produtos Tech: catálogo enviado pelo solicitante. Uso público autorizado pelo pedido de criação do repositório; a loja deve confirmar direitos de publicação.
+- Fotos atuais da vitrine Tech: [Rapoo H120](https://rapoo.africa/product/h120/), [Razer Kraken X](https://www.panacompu.com/panama/en/product-information/razer-kraken-x-for-playstation-headset-wired-over-ear-headband-white), [Redragon Nireus](https://www.pichau.com.br/headset-gamer-redragon-nireus-rgb-som-surround-7-1-drivers-50mm-branco-h399w-rgb), [PCYes KLR](https://www.chipbyte.com.br/usb/teclado-mecanico-usb-pcyes-krl-vermelho-switch-outemu-blue/1752), [Evolut Shodan](https://www.ciapc.com.br/perifericos/mouse-teclado/teclado-mecanico-gamer-evolut-shodan-rgb-switch-red-preto-eg-203rg), [T-Dagger Bora](https://www.t-dagger.com/products/t-dagger-bora-t-tgk315-gaming-mechanical-keyboard-rgb-backlighting) e [Logitech MK235](https://www.logitech.com/pt-br/shop/p/mk235-durable-keyboard-mouse.920-007903). Mapeamento em `public/images/sources.json`. Razer/Evolut/T-Dagger são referências da linha, pois os nomes estão cortados na captura; não foi presumida a variante exata. As fotos não autorizam copiar preços, garantias ou ofertas de terceiros.
+- Movimento: aparição por IntersectionObserver, entrada do destaque e da sacola, feedback nos favoritos e na quantidade, zoom suave nas fotos e transições de botões. Cards preservam a mesma instância ao alterar a sacola. Todos os efeitos respeitam `prefers-reduced-motion`.
 - Headphone editorial: [Unsplash](https://unsplash.com/s/photos/headphones), foto `photo-1585298723682-7115561c51b7`.
 - Papelaria ilustrativa: [Kelly Sikkema](https://unsplash.com/photos/notebook-and-writing-supplies-on-wooden-surface-cGGCg7quYn0), [workspace](https://unsplash.com/photos/workspace-with-notepad-pen-and-accessories-tUydj6Rx7tg), [lápis](https://unsplash.com/photos/a-row-of-colored-pencils-lined-up-against-a-white-background-47JLCB-ZL_0), [caderno](https://unsplash.com/photos/black-spiral-notebook-with-pencils-edWz3EYB3qQ).
 - Fontes DM Sans e Manrope via Google Fonts; o CSS inclui fallback local.
